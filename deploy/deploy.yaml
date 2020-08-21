@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: alert-cli
+  name: alert-cli
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alert-cli
+  template:
+    metadata:
+      labels:
+        app: alert-cli
+    spec:
+      containers:
+      - args:
+        - metrics
+        - --report-path=<url>
+        - --report-backup-path=<url>
+        - --thanos-query-url=<url>
+        - --service-path=<url>
+        image: huangyiyong/alert-cli:v1.0.0
+        imagePullPolicy: Always
+        name: alert-cli
+        ports:
+        - containerPort: 9099
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            cpu: "1"
+            memory: 2Gi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
